@@ -1,0 +1,20 @@
+services:
+  gogin:
+    image: demo/go
+    init: true
+    restart: "no"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - "linux/amd64"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/ping"]
+      interval: 1m30s
+      timeout: 2s
+      retries: 3
+      start_period: 40s
+    ports:
+      - "8080:8080"
+    profiles:
+      - test

@@ -33,3 +33,4 @@ GO MONGODB REACT
 
 # Docker compose the Go app
 
+[See latest references](https://docs.docker.com/compose/compose-file/03-compose-file/)
