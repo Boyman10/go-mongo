@@ -55,11 +55,18 @@ Then run :
 Debug logs should be empty. Pings will show.
 
 
-# Add MongoDB to docker compose
+# Add MongoDB & mongo Express to docker compose
+
+[See Bitnami image](https://hub.docker.com/r/bitnami/mongodb)
+[Mongo Express](https://hub.docker.com/_/mongo-express)
+
+We also define a bridge network and attache the services to it (app-tier).
 
 
+    docker-compose --profile test up -d
+    docker compose --profile test logs
 
-
+    docker ps
 
 
 # TROUBLESHOOTING
@@ -75,3 +82,14 @@ Debug logs should be empty. Pings will show.
 
     docker-compose --profile test rm
     docker-compose --profile test up -d
+
+
+- Express not running
+
+    docker ps -a | grep express
+    docker logs 863dac80c19b
+
+    -> fix url
+
+    + Authentication failed.
+    -> fix user access

@@ -18,5 +18,43 @@ services:
       - GIN_MODE=release
     ports:
       - "8080:8080"
+    networks:
+      - app-tier
+    profiles:
+      - test      
+
+  mongodb:
+    image: 'bitnami/mongodb:latest'
+    networks:
+      - app-tier
+    restart: "no"
+    volumes:
+      - $HOME/mongo/data:/bitnami/mongodb
+    environment:
+      MONGODB_ROOT_USER: root
+      MONGODB_ROOT_PASSWORD: example
+      MONGODB_USERNAME: test_user
+      MONGODB_PASSWORD: password123
+      MONGODB_DATABASE: test_database
     profiles:
       - test
+
+  mongo-express:
+    image: mongo-express
+    restart: "no"
+    depends_on:
+      - mongodb
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_SERVER: mongodb
+    networks:
+      - app-tier
+    profiles:
+      - test
+
+networks:
+  app-tier:
+    driver: bridge
