@@ -34,3 +34,44 @@ GO MONGODB REACT
 # Docker compose the Go app
 
 [See latest references](https://docs.docker.com/compose/compose-file/03-compose-file/)
+
+1. Run docker-compose
+
+    docker-compose --profile test up -d
+    docker ps
+    docker-compose --profile test logs
+
+2. Bring an env variable
+
+Add this to [compose file](compose.yaml) :
+    GIN_MODE=release
+
+Then run :
+
+    docker-compose --profile test up -d
+    docker compose --profile test config
+    docker-compose --profile test logs
+
+Debug logs should be empty. Pings will show.
+
+
+# Add MongoDB to docker compose
+
+
+
+
+
+
+# TROUBLESHOOTING
+
+- Health check not working :
+
+    docker exec -it 2b8f52351bed sh
+
+    1. check if curl is installed
+    2. check if wget is installed
+
+    if 1 of them is then use it.
+
+    docker-compose --profile test rm
+    docker-compose --profile test up -d
