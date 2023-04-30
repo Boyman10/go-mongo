@@ -29,7 +29,9 @@ services:
       - app-tier
     restart: "no"
     volumes:
-      - $HOME/mongo/data:/bitnami/mongodb
+      - mongo-data:/bitnami/mongodb
+    ports:
+      - "27017:27017"
     environment:
       MONGODB_ROOT_USER: root
       MONGODB_ROOT_PASSWORD: example
@@ -58,3 +60,6 @@ services:
 networks:
   app-tier:
     driver: bridge
+
+volumes:
+  mongo-data:

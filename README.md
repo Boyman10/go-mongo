@@ -93,3 +93,23 @@ We also define a bridge network and attache the services to it (app-tier).
 
     + Authentication failed.
     -> fix user access
+
+    1. Expose mongodb port
+    2. access mongo from local mongo shell and make sure the password is working for root
+
+        mongo --authenticationDatabase "admin" -u root -p
+        or
+        mongosh --port 27017 -u test_user -p 'password123' --authenticationDatabase 'admin'
+
+- Clean up
+
+    3. Clean up everything
+
+        docker-compose down -v --rmi all
+
+    => not enough -> the volume was actually binded to host and not tight to docker volume
+    docker volumes ls is not showing up that kind of volume...
+    See inspect the container
+
+    -> Solution create a volume (or/and add the volumes: line to docker compose)
+    -> Or/and remove the host data
