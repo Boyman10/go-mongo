@@ -28,6 +28,12 @@ services:
     networks:
       - app-tier
     restart: "no"
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     volumes:
       - mongo-data:/bitnami/mongodb
     ports:
@@ -35,9 +41,6 @@ services:
     environment:
       MONGODB_ROOT_USER: root
       MONGODB_ROOT_PASSWORD: example
-      MONGODB_USERNAME: test_user
-      MONGODB_PASSWORD: password123
-      MONGODB_DATABASE: test_database
     profiles:
       - test
 
@@ -45,7 +48,8 @@ services:
     image: mongo-express
     restart: "no"
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
     ports:
       - 8081:8081
     environment:

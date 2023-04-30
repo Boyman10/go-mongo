@@ -69,6 +69,33 @@ We also define a bridge network and attache the services to it (app-tier).
     docker ps
 
 
+# Provide health check on mongodb and dependency for express
+
+```yaml
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+```
+# Create the database test_database and add data
+
+> db.createCollection("student")
+
+> db.students.insertOne({
+            "fname":"Ron", 
+            "city":"United States of America", 
+            "courses":[
+                         "python", 
+                         "django", 
+                         "node"
+                      ]
+})
+
+> db.students.find()
+
+
 # TROUBLESHOOTING
 
 - Health check not working :
@@ -99,7 +126,9 @@ We also define a bridge network and attache the services to it (app-tier).
 
         mongo --authenticationDatabase "admin" -u root -p
         or
-        mongosh --port 27017 -u test_user -p 'password123' --authenticationDatabase 'admin'
+        mongosh --port 27017 -u root -p 'example' --authenticationDatabase 'admin'
+
+        mongosh test_database --port 27017 -u test_user -p 'password123' --authenticationDatabase 'admin'
 
 - Clean up
 
