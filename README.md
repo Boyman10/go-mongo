@@ -12,11 +12,13 @@ GO MONGODB REACT
 
 1. Create a module in which you can manage dependencies.
 
+    export PATH=$PATH:/opt/go/bin
     go mod init demo/app
     go get .
 
 2. Try it out locally
 
+    go build
     go run .
 
     curl http://localhost:8080/ping
@@ -79,10 +81,23 @@ We also define a bridge network and attache the services to it (app-tier).
       retries: 3
       start_period: 20s
 ```
-# Create the database test_database and add data
+# Prepare the database
 
-> db.createCollection("student")
+- Create a db : example 
 
+- Add a user with credentials
+> db.createUser(
+  {
+    user: "test",
+    pwd:  "password123",   
+    roles: [ { role: "readWrite", db: "example" } ],
+    passwordDigestor : "server"
+  }
+)
+
+- Prepare the data :
+
+> db.createCollection("students")
 > db.students.insertOne({
             "fname":"Ron", 
             "city":"United States of America", 
@@ -95,8 +110,38 @@ We also define a bridge network and attache the services to it (app-tier).
 
 > db.students.find()
 
+# Add an endpoint in the go application
 
-# TROUBLESHOOTING
+Add the following depedencies to communicate with MongoDB.
+
+```go
+"os"
+"go.mongodb.org/mongo-driver/bson"
+"go.mongodb.org/mongo-driver/mongo"
+"go.mongodb.org/mongo-driver/mongo/options"
+```
+
+And do not forget about the environment variable in the docker compose file :
+[See .env file](.env.example)
+
+- Rebuild the image :
+
+    docker-compose --profile test build gogin
+
+# Add VueJs/React/Angular frontend
+
+
+
+# Going further
+
+- Bring authentication
+- Bring Istio
+
+
+---------------
+TROUBLESHOOTING
+---------------
+
 
 - Health check not working :
 
@@ -129,6 +174,7 @@ We also define a bridge network and attache the services to it (app-tier).
         mongosh --port 27017 -u root -p 'example' --authenticationDatabase 'admin'
 
         mongosh test_database --port 27017 -u test_user -p 'password123' --authenticationDatabase 'admin'
+        mongosh test_database --port 27017 -u test_user -p 'password123' --authenticationDatabase 'example'
 
 - Clean up
 
@@ -142,3 +188,12 @@ We also define a bridge network and attache the services to it (app-tier).
 
     -> Solution create a volume (or/and add the volumes: line to docker compose)
     -> Or/and remove the host data
+
+- MongoDB connection issue
+
+    [Some doc](https://mongodb.github.io/mongo-java-driver/3.8/javadoc/com/mongodb/ConnectionString.html)
+    [Other doc about driver](https://www.digitalocean.com/community/tutorials/how-to-use-go-with-mongodb-using-the-mongodb-go-driver)
+
+- Change the password of a user :
+    
+    > db.changeUserPassword(username, password)

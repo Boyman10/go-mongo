@@ -1,3 +1,7 @@
 go.mod
 go.sum
 .idea
+node_modules
+.vscode
+.idea
+.env
